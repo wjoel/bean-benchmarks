@@ -3,7 +3,7 @@
             [clojure.java.io :as io]))
 
 (defmacro make-persist-and-load [constructor hint]
-  `(fn [edit-events#]
+  `(fn [edit-events# expected-byte-diff-sum#]
      (let [temp-file# (java.io.File/createTempFile "persist" ".bin")]
        (with-open [file-output-stream# (java.io.FileOutputStream. temp-file#)]
          (with-open [object-output-stream# (java.io.ObjectOutputStream. file-output-stream#)]
@@ -23,21 +23,21 @@
                          (::edit-events/is-special edit-event#)
                          (::edit-events/is-talk edit-event#))]
                (.writeObject object-output-stream# obj#))))
-         (println "size:" (int (/ (.length (io/file temp-file#))
-                                  1024)) "KB")
-         (with-open [byte-array-input-stream# (java.io.FileInputStream. temp-file#)]
-           (with-open [object-input-stream# (java.io.ObjectInputStream. byte-array-input-stream#)]
-             (let [edit-objects# (loop [objects# (transient [])]
-                                   (let [edit-object# (try
-                                                        (.readObject object-input-stream#)
-                                                        (catch java.io.OptionalDataException _1#
-                                                          nil)
-                                                        (catch java.io.EOFException _2#
-                                                          nil))]
-                                     (if edit-object#
-                                       (recur (conj! objects# edit-object#))
-                                       (persistent! objects#))))
-                   byte-diff-sum# (->> (map #(.getByteDiff ^{:tag ~hint} %) edit-objects#)
-                                       (reduce +))]
-               (.delete temp-file#)
-               byte-diff-sum#)))))))
+         (let [file-size-kb# (int (/ (.length (io/file temp-file#)) 1024))]
+           (with-open [byte-array-input-stream# (java.io.FileInputStream. temp-file#)]
+             (with-open [object-input-stream# (java.io.ObjectInputStream. byte-array-input-stream#)]
+               (let [edit-objects# (loop [objects# (transient [])]
+                                     (let [edit-object# (try
+                                                          (.readObject object-input-stream#)
+                                                          (catch java.io.OptionalDataException _1#
+                                                            nil)
+                                                          (catch java.io.EOFException _2#
+                                                            nil))]
+                                       (if edit-object#
+                                         (recur (conj! objects# edit-object#))
+                                         (persistent! objects#))))
+                     byte-diff-sum# (->> (map #(.getByteDiff ^{:tag ~hint} %) edit-objects#)
+                                         (reduce +))]
+                 (.delete temp-file#)
+                 (do (assert (= byte-diff-sum# expected-byte-diff-sum#))
+                     file-size-kb#)))))))))
