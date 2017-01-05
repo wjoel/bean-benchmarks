@@ -7,7 +7,7 @@
  :name bean_benchmarks_gen_class_bean.EditGenClass
  :implements [java.io.Serializable]
  :init init
- :state ^"[Ljava.lang.Object;" state
+ :state state
  :prefix "edit-"
  :constructors {[] []
                 [Long
@@ -48,8 +48,7 @@
            [getIsSpecial [] Boolean]
            [setIsSpecial [Boolean] void]
            [getIsTalk [] Boolean]
-           [setIsTalk [Boolean] void]]
- :main false)
+           [setIsTalk [Boolean] void]])
 
 (defn edit-init
   ([] (edit-init 0 nil nil nil nil 0 nil false false false false false false))
@@ -81,56 +80,57 @@
                       isTalk])]))
 
 (defn edit-getTimestamp [^bean_benchmarks_gen_class_bean.EditGenClass this]
-  (aget ^"[Ljava.lang.Object;" (.state this) 0))
+  (aget ^objects (.state ^bean_benchmarks_gen_class_bean.EditGenClass this) 0))
 (defn edit-setTimestamp [^bean_benchmarks_gen_class_bean.EditGenClass this v]
-  (aset ^"[Ljava.lang.Object;" (.state this) 0 v))
+  (aset ^objects (.state ^bean_benchmarks_gen_class_bean.EditGenClass this) 0 ^Long v))
 (defn edit-getChannel [^bean_benchmarks_gen_class_bean.EditGenClass this]
-  (aget ^"[Ljava.lang.Object;" (.state this) 1))
+  (aget ^objects (.state ^bean_benchmarks_gen_class_bean.EditGenClass this) 1))
 (defn edit-setChannel [^bean_benchmarks_gen_class_bean.EditGenClass this v]
-  (aset ^"[Ljava.lang.Object;" (.state this) 1 v))
+  (aset ^objects (.state ^bean_benchmarks_gen_class_bean.EditGenClass this) 1 ^String v))
 (defn edit-getTitle [^bean_benchmarks_gen_class_bean.EditGenClass this]
-  (aget ^"[Ljava.lang.Object;" (.state this) 2))
+  (aget ^objects (.state ^bean_benchmarks_gen_class_bean.EditGenClass this) 2))
 (defn edit-setTitle [^bean_benchmarks_gen_class_bean.EditGenClass this v]
-  (aset ^"[Ljava.lang.Object;" (.state this) 2 v))
+  (aset ^objects (.state ^bean_benchmarks_gen_class_bean.EditGenClass this) 2 ^String v))
 (defn edit-getDiffUrl [^bean_benchmarks_gen_class_bean.EditGenClass this]
-  (aget ^"[Ljava.lang.Object;" (.state this) 3))
+  (aget ^objects (.state ^bean_benchmarks_gen_class_bean.EditGenClass this) 3))
 (defn edit-setDiffUrl [^bean_benchmarks_gen_class_bean.EditGenClass this v]
-  (aset ^"[Ljava.lang.Object;" (.state this) 3 v))
+  (aset ^objects (.state ^bean_benchmarks_gen_class_bean.EditGenClass this) 3 ^String v))
 (defn edit-getUser [^bean_benchmarks_gen_class_bean.EditGenClass this]
-  (aget ^"[Ljava.lang.Object;" (.state this) 4))
+  (aget ^objects (.state ^bean_benchmarks_gen_class_bean.EditGenClass this) 4))
 (defn edit-setUser [^bean_benchmarks_gen_class_bean.EditGenClass this v]
-  (aset ^"[Ljava.lang.Object;" (.state this) 4 v))
+  (aset ^objects (.state ^bean_benchmarks_gen_class_bean.EditGenClass this) 4 ^String v))
 (defn edit-getByteDiff [^bean_benchmarks_gen_class_bean.EditGenClass this]
-  (aget ^"[Ljava.lang.Object;" (.state this) 5))
+  (aget ^objects (.state ^bean_benchmarks_gen_class_bean.EditGenClass this) 5))
 (defn edit-setByteDiff [^bean_benchmarks_gen_class_bean.EditGenClass this v]
-  (aset ^"[Ljava.lang.Object;" (.state this) 5 v))
+  (aset ^objects (.state ^bean_benchmarks_gen_class_bean.EditGenClass this) 5 ^Long v))
 (defn edit-getSummary [^bean_benchmarks_gen_class_bean.EditGenClass this]
-  (aget ^"[Ljava.lang.Object;" (.state this) 6))
+  (aget ^objects (.state ^bean_benchmarks_gen_class_bean.EditGenClass this) 6))
 (defn edit-setSummary [^bean_benchmarks_gen_class_bean.EditGenClass this v]
-  (aset ^"[Ljava.lang.Object;" (.state this) 6 v))
+  (aset ^objects (.state ^bean_benchmarks_gen_class_bean.EditGenClass this) 6 ^String v))
 (defn edit-getIsMinor [^bean_benchmarks_gen_class_bean.EditGenClass this]
-  (aget ^"[Ljava.lang.Object;" (.state this) 7))
+  (aget ^objects (.state ^bean_benchmarks_gen_class_bean.EditGenClass this) 7))
 (defn edit-setIsMinor [^bean_benchmarks_gen_class_bean.EditGenClass this v]
-  (aset ^"[Ljava.lang.Object;" (.state this) 7 v))
+  (aset ^objects (.state ^bean_benchmarks_gen_class_bean.EditGenClass this) 7 ^Boolean v))
 (defn edit-getIsNew [^bean_benchmarks_gen_class_bean.EditGenClass this]
-  (aget ^"[Ljava.lang.Object;" (.state this) 8))
+  (aget ^objects (.state ^bean_benchmarks_gen_class_bean.EditGenClass this) 8))
 (defn edit-setIsNew [^bean_benchmarks_gen_class_bean.EditGenClass this v]
-  (aset ^"[Ljava.lang.Object;" (.state this) 8 v))
+  (aset ^objects (.state ^bean_benchmarks_gen_class_bean.EditGenClass this) 8 ^Boolean v))
 (defn edit-getIsUnpatrolled [^bean_benchmarks_gen_class_bean.EditGenClass this]
-  (aget ^"[Ljava.lang.Object;" (.state this) 9))
+  (aget ^objects (.state ^bean_benchmarks_gen_class_bean.EditGenClass this) 9))
 (defn edit-setIsUnpatrolled [^bean_benchmarks_gen_class_bean.EditGenClass this v]
-  (aset ^"[Ljava.lang.Object;" (.state this) 9 v))
+  (aset ^objects (.state ^bean_benchmarks_gen_class_bean.EditGenClass this) 9 ^Boolean v))
 (defn edit-getIsBotEdit [^bean_benchmarks_gen_class_bean.EditGenClass this]
-  (aget ^"[Ljava.lang.Object;" (.state this) 10))
+  (aget ^objects (.state ^bean_benchmarks_gen_class_bean.EditGenClass this) 10))
 (defn edit-setIsBotEdit [^bean_benchmarks_gen_class_bean.EditGenClass this v]
-  (aset ^"[Ljava.lang.Object;" (.state this) 10 v))
+  (aset ^objects (.state ^bean_benchmarks_gen_class_bean.EditGenClass this) 10 ^Boolean v))
 (defn edit-getIsSpecial [^bean_benchmarks_gen_class_bean.EditGenClass this]
-  (aget ^"[Ljava.lang.Object;" (.state this) 11))
+  (aget ^objects (.state ^bean_benchmarks_gen_class_bean.EditGenClass this) 11))
 (defn edit-setIsSpecial [^bean_benchmarks_gen_class_bean.EditGenClass this v]
-  (aset ^"[Ljava.lang.Object;" (.state this) 11 v))
+  (aset ^objects (.state ^bean_benchmarks_gen_class_bean.EditGenClass this) 11 ^Boolean v))
 (defn edit-getIsTalk [^bean_benchmarks_gen_class_bean.EditGenClass this]
-  (aget ^"[Ljava.lang.Object;" (.state this) 12))
+  (aget ^objects (.state ^bean_benchmarks_gen_class_bean.EditGenClass this) 12))
 (defn edit-setIsTalk [^bean_benchmarks_gen_class_bean.EditGenClass this v]
-  (aset ^"[Ljava.lang.Object;" (.state this) 12 v))
+  (aset ^objects (.state ^bean_benchmarks_gen_class_bean.EditGenClass this) 12 ^Boolean v))
 
-(def persist-and-load (beans/make-persist-and-load bean_benchmarks_gen_class_bean.EditGenClass.))
+(def persist-and-load (beans/make-persist-and-load bean_benchmarks_gen_class_bean.EditGenClass.
+                                                   bean_benchmarks_gen_class_bean.EditGenClass))
