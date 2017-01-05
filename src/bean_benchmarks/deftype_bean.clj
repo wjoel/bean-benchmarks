@@ -1,8 +1,6 @@
 (ns bean-benchmarks.deftype-bean
   (:require [bean-benchmarks.beans :as beans]))
 
-(set! *warn-on-reflection* true)
-
 (definterface IEditEvent
   (^Long getTimestamp [])
   (^void setTimestamp [^Long v])

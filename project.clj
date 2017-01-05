@@ -9,6 +9,7 @@
                  [org.clojure/tools.cli "0.3.5"]]
   :prep-tasks [["compile" "bean-benchmarks.deftype-bean"] "javac" "compile"]
   :aot :all
+  :global-vars {*warn-on-reflection* true}
   :main bean-benchmarks.core
   :java-source-paths ["java"]
   :target-path "target/%s"

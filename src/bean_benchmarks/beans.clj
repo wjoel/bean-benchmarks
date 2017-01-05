@@ -2,8 +2,6 @@
   (:require [bean-benchmarks.edit-events :as edit-events]
             [clojure.java.io :as io]))
 
-(set! *warn-on-reflection* true)
-
 (defmacro make-persist-and-load [constructor hint]
   `(fn [edit-events#]
      (let [temp-file# (java.io.File/createTempFile "persist" ".bin")]

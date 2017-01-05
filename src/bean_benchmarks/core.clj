@@ -7,8 +7,6 @@
             [bean-benchmarks.edit-events :as edit-events])
   (:gen-class))
 
-(set! *warn-on-reflection* true)
-
 (defn sum-byte-diffs [edits byte-diff-fn]
   (->> (map byte-diff-fn edits)
        (reduce +)))

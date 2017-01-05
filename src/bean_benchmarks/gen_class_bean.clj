@@ -1,8 +1,6 @@
 (ns bean-benchmarks.gen-class-bean
   (:require [bean-benchmarks.beans :as beans]))
 
-(set! *warn-on-reflection* true)
-
 (gen-class
  :name bean_benchmarks_gen_class_bean.EditGenClass
  :implements [java.io.Serializable]

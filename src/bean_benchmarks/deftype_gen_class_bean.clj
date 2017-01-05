@@ -2,8 +2,6 @@
   (:require [bean-benchmarks.deftype-bean :as deftype-bean]
             [bean-benchmarks.beans :as beans]))
 
-(set! *warn-on-reflection* true)
-
 (gen-class
  :name bean_benchmarks_gen_class_bean.EditDeftypeGenClass
  :implements [java.io.Serializable]
