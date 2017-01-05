@@ -4,12 +4,12 @@
   :license {:name "MIT License"
             :url "http://www.opensource.org/licenses/mit-license.php"}
   :dependencies [[clojure-future-spec "1.9.0-alpha14"]
-                 [criterium "0.4.4"]
                  [org.clojure/clojure "1.8.0"]
                  [org.clojure/test.check "0.9.0"]
                  [org.clojure/tools.cli "0.3.5"]]
   :prep-tasks [["compile" "bean-benchmarks.deftype-bean"] "javac" "compile"]
   :aot :all
-  :main ^:skip-aot bean-benchmarks.core
+  :main bean-benchmarks.core
+  :java-source-paths ["java"]
   :target-path "target/%s"
   :profiles {:uberjar {:aot :all}})

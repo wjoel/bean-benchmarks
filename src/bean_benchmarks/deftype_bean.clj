@@ -89,4 +89,5 @@
   (setIsTalk [_ v] (set! isTalk v))
   java.io.Serializable)
 
-(def persist-and-load (beans/make-persist-and-load DeftypeEditEvent.))
+(def persist-and-load (beans/make-persist-and-load DeftypeEditEvent.
+                                                   bean_benchmarks.deftype_bean.DeftypeEditEvent))
