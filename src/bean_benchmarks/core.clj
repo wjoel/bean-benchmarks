@@ -5,6 +5,7 @@
             [bean-benchmarks.deftype-bean :as deftype-bean]
             [bean-benchmarks.gen-class-bean :as gen-class-bean]
             [bean-benchmarks.deftype-gen-class-bean :as deftype-gen-class-bean]
+            [bean-benchmarks.macro-bean :as macro-bean]
             [bean-benchmarks.edit-events :as edit-events])
   (:gen-class))
 
@@ -49,7 +50,8 @@
     (measure-and-print-stats "Java with primitive types" n-tests #(primitive-java-bean/persist-and-load test-samples byte-diff-sum))
     (measure-and-print-stats "deftype" n-tests #(deftype-bean/persist-and-load test-samples byte-diff-sum))
     (measure-and-print-stats "gen-class" n-tests #(gen-class-bean/persist-and-load test-samples byte-diff-sum))
-    (measure-and-print-stats "deftype-gen-class" n-tests #(deftype-gen-class-bean/persist-and-load test-samples byte-diff-sum))))
+    (measure-and-print-stats "deftype-gen-class" n-tests #(deftype-gen-class-bean/persist-and-load test-samples byte-diff-sum))
+    (measure-and-print-stats "macro-bean" n-tests #(macro-bean/persist-and-load test-samples byte-diff-sum))))
 
 (defn -main [& args]
   (when-let [options (arguments/parse args)]
