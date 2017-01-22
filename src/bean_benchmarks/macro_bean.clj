@@ -20,11 +20,16 @@
 (defn default-value [type]
   (get-in primitives [type :default] nil))
 
-(defn array-type [type]
+(defn array [type]
   (get-in primitives [type :array-type] 'objects))
 
 (defn primitive? [type]
   (contains? primitives type))
+
+(defn canonical [type]
+  (if (primitive? type)
+    type
+    'object))
 
 (defn sym->upcase-1-str
   "Converts the first character of a symbol's name to uppercase, returns a string"
@@ -37,79 +42,75 @@
   [sym-name tag-value]
   (vary-meta (symbol sym-name) assoc :tag tag-value))
 
-(defn type-and-field->declarations
-  [[type field-name]]
-  (let [sym-name (sym->upcase-1-str field-name)]
+(defn typed-field->declarations
+  [[type name]]
+  (let [sym-name (sym->upcase-1-str name)]
     `([~(symbol (str "get" sym-name)) [] ~type]
       [~(symbol (str "set" sym-name)) [~type] ~(symbol "void")])))
 
-(defn type-and-field->accessors
-  [[type field-name] class-name [type-array-index field-index]]
+(defn typed-field->accessors
+  [[type name] class-name [type-array-index field-index]]
   (let [prefix (->prefix class-name)
-        sym-name (sym->upcase-1-str field-name)
-        value-sym (tagged-sym field-name type)
+        sym-name (sym->upcase-1-str name)
+        value-sym (tagged-sym name type)
         this-sym (tagged-sym "this" class-name)
         state-sym (tagged-sym "state" 'objects)
-        array-sym (tagged-sym "type-array" (array-type type))]
+        array-sym (tagged-sym "type-array" (array type))]
     `((defn ~(symbol (str prefix "get" sym-name)) [~this-sym]
         (let [~state-sym (.state ~this-sym)
               ~array-sym (aget ~state-sym ~type-array-index)]
           (aget ~array-sym ~field-index)))
-      (defn ~(symbol (str prefix "set" sym-name)) [~this-sym ~(symbol field-name)]
+      (defn ~(symbol (str prefix "set" sym-name)) [~this-sym ~(symbol name)]
         (let [~state-sym (.state ~this-sym)
               ~array-sym (aget ~state-sym ~type-array-index)]
           (aset ~array-sym ~field-index ~value-sym))))))
 
-(defn primitive-field->initializer [[type fields]]
+(defn coordinate-map [type->fields]
+  (let [type->state-index (->> (map vector (sort (keys type->fields)) (range))
+                               (into {}))
+        ->type-index (fn [[type name]]
+                       (.indexOf ^java.util.List (type->fields (canonical type)) name))]
+    (reduce (fn [m [type fields]]
+              (reduce (fn [m field]
+                        (assoc m field [(type->state-index type)
+                                        (->type-index [type field])]))
+                      m fields))
+            {} type->fields)))
+
+(defn typed-fields->initializer [[type fields]]
   (let [array-type (symbol (str "clojure.core/" (name type) "-array"))]
     `(~array-type [~@fields])))
 
-(defn initial-state-value [types-and-fields]
-  (let [type->fields (into {} types-and-fields)
-        non-primitives (->> (filter #(not (primitive? (first %))) types-and-fields)
-                            (map second)
-                            sort)
-        primitive-types-and-fields (->> (filter #(primitive? (first %)) types-and-fields)
-                                        (map (fn [[type field-name]]
-                                               {type [field-name]})))
-        primitive-type->fields (apply merge-with concat primitive-types-and-fields)
-        type->index (->> (map vector (sort (keys primitive-type->fields)) (range))
-                         (into {'object (count primitive-type->fields)}))
-        primitive-inits (->> (map primitive-field->initializer primitive-type->fields)
-                             (sort-by first))
-        field-name->coordinate (->> (map (fn [[type field-name]]
-
-                                           (let [type-fields (or (get primitive-type->fields type)
-                                                                 non-primitives)]
-                                             {field-name [(type->index (if (primitive? type)
-                                                                         type
-                                                                         'object))
-                                                          (.indexOf ^java.util.List type-fields
-                                                                    field-name)]}))
-                                         types-and-fields)
-                                    (into {}))
-        object-inits `(object-array [~@non-primitives])]
-    [field-name->coordinate (concat primitive-inits [object-inits])]))
+(defn initial-state-value [type->fields]
+  (->> (map typed-fields->initializer type->fields)
+       (sort-by first)))
 
 (defmacro defbean
   "Generates a Java bean. The fields are a set of field type and name."
-  [class-name types-and-fields]
-  {:pre [(vector? types-and-fields)
-         (every? vector? types-and-fields)
-         (every? (comp even? count) types-and-fields)]}
+  [class-name typed-fields]
+  {:pre [(vector? typed-fields)
+         (every? vector? typed-fields)
+         (every? (comp even? count) typed-fields)]}
   (let [prefix (->prefix class-name)
-        field-types (map first types-and-fields)
-        field-names (map second types-and-fields)
-        val (initial-state-value types-and-fields)
-        [field-name->coordinate initial-state-initializer] (initial-state-value types-and-fields)
-        method-decls (mapcat type-and-field->declarations types-and-fields)
-        method-impls (mapcat (fn [[type field-name :as type-and-field]]
-                               (type-and-field->accessors type-and-field class-name
-                                                          (field-name->coordinate field-name)))
-                             types-and-fields)
+        types (map first typed-fields)
+        names (map second typed-fields)
+        object-fields (->> (filter #(not (primitive? (first %))) typed-fields)
+                           (map second)
+                           sort)
+        type->fields (->> (filter #(primitive? (first %)) typed-fields)
+                          (reduce (fn [m [type name]]
+                                    (assoc m type (conj (m type) name)))
+                                  {'object object-fields}))
+        initial-state-initializer (initial-state-value type->fields)
+        name->coordinate (coordinate-map type->fields)
+        method-decls (mapcat typed-field->declarations typed-fields)
+        method-impls (mapcat (fn [[type name :as typed-field]]
+                               (typed-field->accessors typed-field class-name
+                                                       (name->coordinate name)))
+                             typed-fields)
         initial-state (gensym "initial-state")
         init-sym (symbol (str prefix "init"))
-        null-constructor-values (map default-value field-types)]
+        null-constructor-values (map default-value types)]
     `(do
        (gen-class
         :name ~class-name
@@ -118,12 +119,12 @@
         :state "state"
         :prefix ~prefix
         :constructors {[] []
-                       [~@field-types] []}
+                       [~@types] []}
         :methods [~@method-decls])
 
        (defn ~init-sym
          ([] [[] (~init-sym ~@null-constructor-values)])
-         ([~@(map symbol field-names)]
+         ([~@names]
           [[] (object-array [~@initial-state-initializer])]))
 
        ~@method-impls)))
