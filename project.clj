@@ -1,4 +1,4 @@
-(defproject bean-benchmarks "0.1.0-SNAPSHOT"
+(defproject bean-benchmarks "0.1.0"
   :description "Benchmarking of Java bean implementations in Clojure"
   :url "https://github.com/wjoel/bean-benchmarks"
   :license {:name "MIT License"
