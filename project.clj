@@ -6,7 +6,8 @@
   :dependencies [[clojure-future-spec "1.9.0-alpha14"]
                  [org.clojure/clojure "1.8.0"]
                  [org.clojure/test.check "0.9.0"]
-                 [org.clojure/tools.cli "0.3.5"]]
+                 [org.clojure/tools.cli "0.3.5"]
+                 [com.wjoel/clj-bean "0.1.0"]]
   :prep-tasks [["compile" "bean-benchmarks.deftype-bean"] "javac" "compile"]
   :aot :all
   :global-vars {*warn-on-reflection* true}

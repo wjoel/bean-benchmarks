@@ -6,6 +6,7 @@
             [bean-benchmarks.gen-class-bean :as gen-class-bean]
             [bean-benchmarks.deftype-gen-class-bean :as deftype-gen-class-bean]
             [bean-benchmarks.macro-bean :as macro-bean]
+            [bean-benchmarks.defbean-bean :as defbean-bean]
             [bean-benchmarks.edit-events :as edit-events])
   (:gen-class))
 
@@ -24,7 +25,8 @@
          Math/sqrt)))
 
 (defn print-stats [name file-size measurements]
-  (println "|" name "|" file-size "|" (mean measurements) "|" (standard-deviation measurements) "|"))
+  (println (format "| %s | %d KB | %.4f s | %.4f s |"
+                   name file-size (mean measurements) (standard-deviation measurements))))
 
 (def n-tests 10)
 
@@ -51,7 +53,8 @@
     (measure-and-print-stats "deftype" n-tests #(deftype-bean/persist-and-load test-samples byte-diff-sum))
     (measure-and-print-stats "gen-class" n-tests #(gen-class-bean/persist-and-load test-samples byte-diff-sum))
     (measure-and-print-stats "deftype-gen-class" n-tests #(deftype-gen-class-bean/persist-and-load test-samples byte-diff-sum))
-    (measure-and-print-stats "macro-bean" n-tests #(macro-bean/persist-and-load test-samples byte-diff-sum))))
+    (measure-and-print-stats "macro-bean" n-tests #(macro-bean/persist-and-load test-samples byte-diff-sum))
+    (measure-and-print-stats "defbean-bean" n-tests #(defbean-bean/persist-and-load test-samples byte-diff-sum))))
 
 (defn -main [& args]
   (when-let [options (arguments/parse args)]
